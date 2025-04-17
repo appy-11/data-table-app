@@ -4,11 +4,12 @@ const API_URL = 'http://localhost:3001';
 
 // Create an axios instance
 const apiClient = axios.create({
-    baseURL: API_URL,
+    baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001',
     headers: {
         'Content-Type': 'application/json',
     },
 });
+
 
 export const fetchUsers = async (params = {}) => {
     try {
