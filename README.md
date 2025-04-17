@@ -1,36 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Data Table App
+
+A feature-rich data table application built with Next.js and JSON Server, providing an intuitive interface for managing user data with advanced features like sorting, filtering, pagination, and CRUD operations.
+
+
+## Features
+
+- **Advanced Data Table**
+  - Server-side sorting on any column
+  - Server-side filtering and search
+  - Pagination with customizable items per page
+  - Show/hide columns functionality
+  
+- **Complete CRUD Operations**
+  - Create new users with form validation
+  - View user details in a structured table
+  - Update existing user information
+  - Delete users with confirmation
+  
+- **Responsive Design**
+  - Works on desktop and mobile devices
+  - Clean and intuitive user interface
+
+- **Optimized Performance**
+  - Server-side data processing
+  - Debounced search for better user experience
+  - Efficient state management
+
+## Tech Stack
+
+- **Frontend**: Next.js, React, TailwindCSS
+- **Backend**: JSON Server
+- **State Management**: React Hooks
+- **UI Components**: React Icons, React Modal
+- **HTTP Client**: Axios
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js (v14 or later)
+- npm or yarn
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/appy-11/data-table-app.git
+   cd data-table-app
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Create a `data` folder and set up your database:
+   ```bash
+   mkdir -p data
+   cp db.json data/
+   # or create a new db.json file in the data folder
+   ```
+
+### Running the Application
+
+Run both the frontend and backend concurrently:
+```bash
+npm run dev:all
+# or
+yarn dev:all
+```
+
+Or run them separately:
 
 ```bash
+# Run JSON Server (backend)
+npm run server
+# or
+yarn server
+
+# In another terminal, run Next.js (frontend)
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Frontend will be available at: http://localhost:3000
+- API will be available at: http://localhost:3001
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+data-table-app/
+│
+├── data/
+│   └── db.json            # JSON Server database file
+│
+├── src/
+│   ├── app/
+│   │   ├── page.js        # Main page component
+│   │   ├── layout.js      # Main layout component
+│   │   └── globals.css    # Global styles
+│   │
+│   ├── components/
+│   │   ├── UserTable.js   # Main data table component
+│   │   ├── UserModal.js   # Modal for adding/editing users
+│   │   └── ColumnSelector.js # Component for toggling column   
+│   │   └── Loader.js # Component for Loader
+│   │
+│   └── services/
+│       └── api.js         # API service for CRUD operations
+│
+├── package.json           # Project dependencies and scripts
+└── README.md              # Project documentation
+```
 
-To learn more about Next.js, take a look at the following resources:
+## API Reference
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### User Endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/users` | Get all users with optional filtering, sorting, and pagination |
+| GET | `/users/:id` | Get a specific user by ID |
+| POST | `/users` | Create a new user |
+| PUT | `/users/:id` | Update an existing user |
+| DELETE | `/users/:id` | Delete a user |
 
-## Deploy on Vercel
+### Query Parameters
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `_page` | number | Page number for pagination |
+| `_limit` | number | Number of items per page |
+| `_sort` | string | Field to sort by |
+| `_order` | string | Sort order ('asc' or 'desc') |
+| `q` | string | Search term across all fields |
+| `[fieldName]` | string | Filter by specific field value |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Commit your changes (`git commit -m 'Add some amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Acknowledgments
+
+- [Next.js](https://nextjs.org/)
+- [JSON Server](https://github.com/typicode/json-server)
+- [React Modal](https://github.com/reactjs/react-modal)
+- [React Icons](https://react-icons.github.io/react-icons/)
