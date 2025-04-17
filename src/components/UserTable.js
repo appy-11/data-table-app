@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { FaEdit, FaTrash, FaSort, FaSortUp, FaSortDown } from 'react-icons/fa';
 import UserModal from './UserModal';
 import ColumnSelector from './ColumnSelector';
+import Loader from './Loader';
 import { fetchUsers, deleteUser } from '../services/api';
 
 const UserTable = () => {
@@ -192,7 +193,11 @@ const UserTable = () => {
         return <span className={color}>{status}</span>;
     };
 
-    if (loading) return <div className="text-center p-4">Loading...</div>;
+    if (loading) return (
+        <div className="text-center p-4">
+            <Loader size="medium" />
+        </div>
+    );
     if (error) return <div className="text-center text-red-500 p-4">{error}</div>;
 
     return (
