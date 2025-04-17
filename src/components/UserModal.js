@@ -104,6 +104,7 @@ const UserModal = ({ isOpen, onClose, onSubmit, user, mode }) => {
 
             onSubmit();
         } catch (error) {
+            console.log * ('Error:', error);
             setErrors(prev => ({
                 ...prev,
                 form: 'An error occurred. Please try again.'

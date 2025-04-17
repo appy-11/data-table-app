@@ -30,11 +30,6 @@ const UserTable = () => {
     });
 
 
-    // Corrected range calculation
-    const startIndex = users.length > 0 ? (currentPage - 1) * limit + 1 : 0;
-    const endIndex = Math.min((currentPage - 1) * limit + users.length, totalCount);
-
-
     // Load users on mount and when pagination, sorting, or filtering changes
     useEffect(() => {
         const loadUsers = async () => {
@@ -56,6 +51,7 @@ const UserTable = () => {
                 setTotalCount(response.totalCount);
                 setLoading(false);
             } catch (err) {
+                console.log('Error fetching users:', err); // Debugging line
                 setError('Failed to fetch users.');
                 setLoading(false);
             }
