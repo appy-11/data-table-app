@@ -132,6 +132,7 @@ const UserTable = () => {
                     setCurrentPage(currentPage - 1);
                 }
             } catch (err) {
+                console.log('Error deleting user:', err); // Debugging line
                 setError('Failed to delete user.');
             }
         }
