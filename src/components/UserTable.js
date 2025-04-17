@@ -13,21 +13,25 @@ const UserTable = () => {
     const [totalPages, setTotalPages] = useState(0);
     const [limit, setLimit] = useState(5);
     const [sortConfig, setSortConfig] = useState({ field: null, order: null });
-    //a debounce mechanism for search
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
     const [filterConfig, setFilterConfig] = useState({});
     const [totalCount, setTotalCount] = useState(0);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
-    const [modalMode, setModalMode] = useState('create'); // 'create', 'edit'
+    const [modalMode, setModalMode] = useState('create');
     const [visibleColumns, setVisibleColumns] = useState({
         name: true,
         email: true,
         role: true,
         status: true,
-        joinDate: true
+        joinDate: true,
     });
+
+
+    // Corrected range calculation
+    const startIndex = users.length > 0 ? (currentPage - 1) * limit + 1 : 0;
+    const endIndex = Math.min((currentPage - 1) * limit + users.length, totalCount);
 
 
     // Load users on mount and when pagination, sorting, or filtering changes
@@ -40,11 +44,12 @@ const UserTable = () => {
                     limit,
                     sortBy: sortConfig.field,
                     sortOrder: sortConfig.order,
-                    search: debouncedSearchTerm, // Use debounced value here
-                    filter: filterConfig
+                    search: debouncedSearchTerm,
+                    filter: filterConfig,
                 };
 
                 const response = await fetchUsers(params);
+                console.log('Fetched users:', response); // Debugging line
                 setUsers(response.data);
                 setTotalPages(response.totalPages);
                 setTotalCount(response.totalCount);
@@ -56,17 +61,16 @@ const UserTable = () => {
         };
 
         loadUsers();
-    }, [currentPage, limit, sortConfig, debouncedSearchTerm, filterConfig]); // Use debouncedSearchTerm in dependency array
+    }, [currentPage, limit, sortConfig, debouncedSearchTerm, filterConfig]);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm);
-        }, 300); // 300ms delay for debouncing
+        }, 300);
 
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    // Handle sorting
     const handleSort = (field) => {
         let order = 'asc';
 
@@ -80,7 +84,7 @@ const UserTable = () => {
         }
 
         setSortConfig({ field, order });
-        setCurrentPage(1); // Reset to first page
+        setCurrentPage(1);
     };
 
     // Get sort icon
@@ -98,11 +102,11 @@ const UserTable = () => {
 
     // Handle filter change
     const handleFilterChange = (field, value) => {
-        setFilterConfig(prev => ({
+        setFilterConfig((prev) => ({
             ...prev,
-            [field]: value
+            [field]: value,
         }));
-        setCurrentPage(1); // Reset to first page
+        setCurrentPage(1);
     };
 
     // Handle user deletion
@@ -117,13 +121,14 @@ const UserTable = () => {
                     limit,
                     sortBy: sortConfig.field,
                     sortOrder: sortConfig.order,
-                    search: searchTerm,
-                    filter: filterConfig
+                    search: debouncedSearchTerm,
+                    filter: filterConfig,
                 };
 
                 const response = await fetchUsers(params);
                 setUsers(response.data);
                 setTotalPages(response.totalPages);
+                setTotalCount(response.totalCount);
 
                 // If we deleted the last item on the page, go to previous page
                 if (users.length === 1 && currentPage > 1) {
@@ -158,26 +163,26 @@ const UserTable = () => {
     const handleUserSubmit = async () => {
         setModalIsOpen(false);
 
-        // Reload users
         const params = {
             page: currentPage,
             limit,
             sortBy: sortConfig.field,
             sortOrder: sortConfig.order,
-            search: searchTerm,
-            filter: filterConfig
+            search: debouncedSearchTerm,
+            filter: filterConfig,
         };
 
         const response = await fetchUsers(params);
         setUsers(response.data);
         setTotalPages(response.totalPages);
+        setTotalCount(response.totalCount);
     };
 
     // Toggle column visibility
     const toggleColumnVisibility = (column) => {
-        setVisibleColumns(prev => ({
+        setVisibleColumns((prev) => ({
             ...prev,
-            [column]: !prev[column]
+            [column]: !prev[column],
         }));
     };
 
@@ -358,7 +363,11 @@ const UserTable = () => {
             <div className="mt-4 flex justify-between items-center">
                 <div>
                     <span>
-                        Showing {(users.length ? (currentPage - 1) * limit + users.length : 0)} of {totalCount} entries
+                        {/* Calculate start and end indexes properly */}
+                        Showing {users.length > 0 ? (currentPage - 1) * limit + 1 : 0}
+                        {' to '}
+                        {Math.min((currentPage - 1) * limit + users.length, totalCount)}
+                        {' of '}{totalCount} entries
                     </span>
                     <select
                         value={limit}
@@ -401,7 +410,7 @@ const UserTable = () => {
                     </span>
                     <button
                         onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
+                        disabled={currentPage >= totalPages}
                         className={`px-3 py-1 rounded ${currentPage === totalPages
                             ? 'bg-gray-200 cursor-not-allowed'
                             : 'bg-blue-500 text-white hover:bg-blue-700'
@@ -411,7 +420,7 @@ const UserTable = () => {
                     </button>
                     <button
                         onClick={() => setCurrentPage(totalPages)}
-                        disabled={currentPage === totalPages}
+                        disabled={currentPage >= totalPages}
                         className={`px-3 py-1 rounded ${currentPage === totalPages
                             ? 'bg-gray-200 cursor-not-allowed'
                             : 'bg-blue-500 text-white hover:bg-blue-700'
